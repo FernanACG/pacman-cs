@@ -33,15 +33,10 @@ def main():
 				broadcast(socket, UsersConnected, ident, dataToSend)
 
 			if operation == b"changepos":
-				UsersConnected[ident] = eval(Mensaje[1])
-				broadcast(socket, UsersConnected, ident, Mensaje)
+				UsersConnected[ident] = eval(Mensaje[0])
+				dataToSend = [b'user_change_position', ident, Mensaje[0]]
 
-				#U
-				# for User in UsersConnected:
-				#socket.send_string('a')
-			#print ("Movimiento: %s" % User)
-
-		print(UsersConnected)
+				broadcast(socket, UsersConnected, ident, dataToSend)
 
 if __name__ == '__main__':
 	main()

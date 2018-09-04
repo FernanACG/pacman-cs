@@ -134,11 +134,19 @@ def main(idplayer):
 				players[ident].muros = Muros
 				Personajes.add(players[ident])
 
-			# print(operation, message)
+			elif operation == b'user_change_position':
+				ident = message[0]
+				pos = eval(message[1].decode('ascii'))
+
+				print(ident, pos)
+
+				x = pos[0]
+				y = pos[1]
+
+				players[ident].setPos(x, y)
 		except zmq.ZMQError as e:
 			pass
 
-		bPOSPlayer = bytes(str(players[idplayer].GetPos()), 'ascii')
 		for event in pg.event.get(): # Cierre
 			if event.type == pg.QUIT:
 				Running = False
@@ -156,7 +164,8 @@ def main(idplayer):
 					players[idplayer].dir = 1
 					players[idplayer].var_y = -5
 					players[idplayer].var_x = 0
-					Socket.send_multipart([b"changepos", bIDPPlayer, bPOSPlayer])
+					bPOSPlayer = bytes(str(players[idplayer].GetPos()), 'ascii')
+					Socket.send_multipart([b"changepos", bPOSPlayer])
 					#Cambiar de direccion
 				if event.key== pg.K_DOWN:
 					x = players[idplayer].GetPos()[0]
@@ -167,7 +176,8 @@ def main(idplayer):
 					players[idplayer].dir = 3
 					players[idplayer].var_y = 5
 					players[idplayer].var_x = 0
-					Socket.send_multipart([b"changepos", bIDPPlayer, bPOSPlayer])
+					bPOSPlayer = bytes(str(players[idplayer].GetPos()), 'ascii')
+					Socket.send_multipart([b"changepos", bPOSPlayer])
 					#Cambiar de direccion
 				if event.key== pg.K_LEFT:
 					x = players[idplayer].GetPos()[0]
@@ -178,7 +188,8 @@ def main(idplayer):
 					players[idplayer].dir = 2
 					players[idplayer].var_y = 0
 					players[idplayer].var_x = -5
-					Socket.send_multipart([b"changepos", bIDPPlayer, bPOSPlayer])
+					bPOSPlayer = bytes(str(players[idplayer].GetPos()), 'ascii')
+					Socket.send_multipart([b"changepos", bPOSPlayer])
 					#Cambiar de direccion
 				if event.key== pg.K_RIGHT:
 					x = players[idplayer].GetPos()[0]
@@ -189,7 +200,8 @@ def main(idplayer):
 					players[idplayer].dir = 0
 					players[idplayer].var_y = 0
 					players[idplayer].var_x = 5
-					Socket.send_multipart([b"changepos", bIDPPlayer, bPOSPlayer])
+					bPOSPlayer = bytes(str(players[idplayer].GetPos()), 'ascii')
+					Socket.send_multipart([b"changepos", bPOSPlayer])
 				if event.key == pg.K_k:
 					players[idplayer].GetPos()
 					#Cambiar de direccion

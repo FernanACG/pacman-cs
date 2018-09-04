@@ -26,7 +26,7 @@ def main():
 
 			if operation == b"hello":
 				socket.send_multipart([ident, bytes(str(UsersConnected), 'ascii')])
-				print(Mensaje[0])
+				# print(Mensaje[0])
 				UsersConnected[ident] = eval(Mensaje[0].decode('ascii'))
 
 				dataToSend = [b'new_user', ident] + Mensaje

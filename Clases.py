@@ -91,7 +91,7 @@ class Jugador(pg.sprite.Sprite):
 	def Buffado(self):
 		self.i = 3
 		self.b = 3
-		self.cont = 1000
+		self.cont = 300
 		self.buff = True
 
 	def update(self):
@@ -131,6 +131,14 @@ class Jugador(pg.sprite.Sprite):
 		#--------------------------------------------------------#
 
 		# if self.var_x !=0 or self.var_y !=0:
+		if self.buff:
+			if self.cont > 0:
+				self.cont -= 1
+			else:
+				self.i = 0
+				self.b = 0
+				self.buff = False
+
 		if self.i < (self.b + 2):
 			self.i += 1
 		else:

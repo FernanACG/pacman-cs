@@ -9,6 +9,8 @@ from Funciones import *
 Ancho = 32 * 35
 Alto = 32 * 19
 
+
+
 def lobby(Mensaje):
 
 	waiting = True
@@ -23,6 +25,7 @@ def lobby(Mensaje):
 def main(idplayer):
 
 	Pantalla = pg.display.set_mode([Ancho, Alto])
+	pg.display.set_caption('Pacman')
 	bIDPPlayer = bytes(idplayer, 'ascii')
 	players = {}
 
@@ -240,31 +243,19 @@ def main(idplayer):
 			for m in ls_bf:
 				Buffosr.remove(Buffo)
 				m.Buffado()
-				if m.cont > 0:
-					m.cont -= 1
-				else:
-					m.i = 3
-					m.b = 3
-					m.buff = False
 
 			ls_bf = pg.sprite.spritecollide(Buffo, Rivales, False)
 			for m in ls_bf:
 				Buffosr.remove(Buffo)
 				m.Buffado()
-				if m.cont > 0:
-					m.cont -= 1
-				else:
-					m.i = 3
-					m.b = 3
-					m.buff = False
 
 		for Pj in Personajes:
 			ls_se = pg.sprite.spritecollide(Pj, Semillas, True)
 
 			if Pj.buff:
 				ls_rc = pg.sprite.spritecollide(Pj, Rivales, True)
-				for m in ls_rc:
-					m.BajarVida()
+				for n in ls_rc:
+					n.BajarVida()
 
 		for Pj in Rivales:
 			ls_ser = pg.sprite.spritecollide(Pj, Semillas, True)
@@ -307,7 +298,7 @@ if __name__ == '__main__':
 	context=zmq.Context()
 	Socket=context.socket(zmq.DEALER)
 	Socket.identity = bytes(idplayer, 'ascii')
-	Socket.connect("tcp://localhost:6666")
+	Socket.connect("tcp://192.168.61.145:6666")
 
 
 	Reloj = pg.time.Clock()

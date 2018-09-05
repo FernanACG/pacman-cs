@@ -138,7 +138,9 @@ def main(idplayer):
 			players[usernameInBytes] = Jugador(imagen,0,0, x, y)
 			players[usernameInBytes].muros = Muros
 			players[usernameInBytes].premios = Buffosr
-			Personajes.add(players[usernameInBytes])
+			Rivales.add(players[usernameInBytes])
+
+
 	Running=True
 
 	while Running:
@@ -155,7 +157,7 @@ def main(idplayer):
 
 				players[ident] = Jugador(imagen,0,0, x, y)
 				players[ident].muros = Muros
-				Personajes.add(players[ident])
+				Rivales.add(players[ident])
 
 			elif operation == b'user_change_position':
 				ident = message[0]
@@ -223,6 +225,7 @@ def main(idplayer):
 					players[idplayer].var_x = 5
 					bPOSPlayer = bytes(str(players[idplayer].GetPos()), 'ascii')
 					Socket.send_multipart([b"changepos", bPOSPlayer])
+
 				if event.key == pg.K_k:
 					players[idplayer].GetPos()
 
@@ -237,29 +240,50 @@ def main(idplayer):
 			for m in ls_bf:
 				Buffosr.remove(Buffo)
 				m.Buffado()
+				if m.cont > 0:
+					m.cont -= 1
+				else:
+					m.i = 3
+					m.b = 3
+					m.buff = False
+
+			ls_bf = pg.sprite.spritecollide(Buffo, Rivales, False)
+			for m in ls_bf:
+				Buffosr.remove(Buffo)
+				m.Buffado()
+				if m.cont > 0:
+					m.cont -= 1
+				else:
+					m.i = 3
+					m.b = 3
+					m.buff = False
 
 		for Pj in Personajes:
 			ls_se = pg.sprite.spritecollide(Pj, Semillas, True)
-			# for m in ls_se:
-			# 	CantSeeds -= 1
 
-			# ls_bc = pg.sprite.spritecollide(Pj, Buffosr, False)
-			# for m in ls_bc:
-			# 	Pj.Buffado()
+			if Pj.buff:
+				ls_rc = pg.sprite.spritecollide(Pj, Rivales, True)
+				for m in ls_rc:
+					m.BajarVida()
 
-			# if Pj.buff:
-			# 	ls_rc = pg.sprite.spritecollide(Pj, Personajes, True)
-			# 	for m in ls_rc:
-			# 		m.BajarVida()
+		for Pj in Rivales:
+			ls_ser = pg.sprite.spritecollide(Pj, Semillas, True)
+
+			if Pj.buff:
+				ls_rcr = pg.sprite.spritecollide(Pj, Personajes, True)
+				for m in ls_rcr:
+					m.BajarVida()
 
 
 		Personajes.update()
+		Rivales.update()
 		Muros.draw(Pantalla)
 		Mapping(fondo, mapa, interprete, Pantalla)
 		Semillas.draw(Pantalla)
 		Buffosr.draw(Pantalla)
 		General.draw(Pantalla)
 		Personajes.draw(Pantalla)
+		Rivales.draw(Pantalla)
 		# Rivales.draw(Pantalla)
 
 		pg.display.flip()

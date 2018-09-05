@@ -69,21 +69,42 @@ def main(idplayer):
 					ne += 1
 					continue
 				ran = random.randint(0,100)
-				if ran < 3:
-					Bf1 = BuffoR(Corn)
-					Bf1.rect.x = ne*32
-					Bf1.rect.y = nf*32
-					Buffosr.add(Bf1)
-				else:
+				if ran >= 0:
 					sb = Semilla(Seed)
 					sb.rect.x = ne*32
 					sb.rect.y = nf*32
 					Semillas.add(sb)
+
 			ne += 1
 			#print ('Iteracion',enumf, enume)
 		nf += 1
 		ne = 0
 
+
+	Bf1 = BuffoR(Corn)
+	Bf1.rect.x = 1*32
+	Bf1.rect.y = 1*32
+	Buffosr.add(Bf1)
+
+	Bf2 = BuffoR(Corn)
+	Bf2.rect.x = 1*32
+	Bf2.rect.y = 17*32
+	Buffosr.add(Bf2)
+
+	Bf3 = BuffoR(Corn)
+	Bf3.rect.x = 33*32
+	Bf3.rect.y = 1*32
+	Buffosr.add(Bf3)
+
+	Bf4 = BuffoR(Corn)
+	Bf4.rect.x = 33*32
+	Bf4.rect.y = 18*32
+	Buffosr.add(Bf4)
+
+	Bf5 = BuffoR(Corn)
+	Bf5.rect.x = 17*32
+	Bf5.rect.y = 7*32
+	Buffosr.add(Bf5)
 
 	players[idplayer].muros = Muros
 
@@ -138,12 +159,11 @@ def main(idplayer):
 				ident = message[0]
 				pos = eval(message[1].decode('ascii'))
 
-				print(ident, pos)
-
 				x = pos[0]
 				y = pos[1]
 
 				players[ident].setPos(x, y)
+
 		except zmq.ZMQError as e:
 			pass
 
@@ -159,7 +179,7 @@ def main(idplayer):
 					x = players[idplayer].GetPos()[0]
 					y = players[idplayer].GetPos()[1]
 
-					players[idplayer].setPos(x, y-10)
+					players[idplayer].setPos(x, y-10) # ubica la posicion en la que este
 
 					players[idplayer].dir = 1
 					players[idplayer].var_y = -5
@@ -172,12 +192,11 @@ def main(idplayer):
 					y = players[idplayer].GetPos()[1]
 
 					players[idplayer].setPos(x, y+10)
-
 					players[idplayer].dir = 3
 					players[idplayer].var_y = 5
 					players[idplayer].var_x = 0
-					bPOSPlayer = bytes(str(players[idplayer].GetPos()), 'ascii')
-					Socket.send_multipart([b"changepos", bPOSPlayer])
+					bPOSPlayer = bytes(str(players[idplayer].GetPos()), 'ascii') #
+					Socket.send_multipart([b"changepos", bPOSPlayer])#
 					#Cambiar de direccion
 				if event.key== pg.K_LEFT:
 					x = players[idplayer].GetPos()[0]
@@ -211,7 +230,22 @@ def main(idplayer):
 
 		#
 
-		# Rivales.update()
+		for Pj in Personajes:
+			ls_se = pg.sprite.spritecollide(Pj, Semillas, True)
+			# for m in ls_se:
+			# 	CantSeeds -= 1
+
+			ls_bc = pg.sprite.spritecollide(Pj, Buffosr, True)
+			for m in ls_bc:
+				Pj.Buffado()
+
+			if Pj.buff:
+				ls_rc = pg.sprite.spritecollide(Pj, Personajes, True)
+				for m in ls_rc:
+					Pj.BajarVida()
+
+
+		Personajes.update()
 		Muros.draw(Pantalla)
 		Mapping(fondo, mapa, interprete, Pantalla)
 		Semillas.draw(Pantalla)
@@ -221,7 +255,7 @@ def main(idplayer):
 		# Rivales.draw(Pantalla)
 
 		pg.display.flip()
-		Reloj.tick(60)
+		Reloj.tick(20)
 
 if __name__ == '__main__':
 

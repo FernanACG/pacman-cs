@@ -48,7 +48,7 @@ class Vida(pg.sprite.Sprite):
 		self.rect=self.image.get_rect()
 
 class Jugador(pg.sprite.Sprite):
-	def __init__(self, img_sprite, a,b, x=0, y=0):
+	def __init__(self, img_sprite, a, b, x=0, y=0):
 		x = int(x)
 		y = int(y)
 		pg.sprite.Sprite.__init__(self)
@@ -57,15 +57,18 @@ class Jugador(pg.sprite.Sprite):
 		self.rect=self.image.get_rect(topleft=(x,y))
 		self.a = a
 		self.b = b
+		self.x = x
+		self.y = y
 		self.dir = a
 		self.i = b
 		self.var_x = 0
 		self.var_y = 0
 		self.muros = None
-		#self.premios = None
-		#self.rivales = None
+		self.premios = None
+		self.rivales = None
 		self.nriv = 0
 		self.puntaje = 0
+		self.buff = False
 		self.vidas = 1
 
 	def GetPos(self):
@@ -80,11 +83,19 @@ class Jugador(pg.sprite.Sprite):
 	def setPos(self, x, y):
 		x = int(x)
 		y = int(y)
-		self.rect=self.image.get_rect(topleft=(x,y))
+		self.x = x
+		self.y = y
+		self.rect=self.image.get_rect(topleft=(x,y)) #topleft= ubique imagen en el borde del frame
+
+	def Buffado(self):
+		self.i = 3
+		self.b = 3
+		self.cont = 1000
+		self.buff = True
 
 	def update(self):
-		self.rect.x+= self.var_x
-		self.rect.y += self.var_y
+		# self.rect.x += self.var_x
+		# self.rect.y += self.var_y
 
 		#Colisiones con muros
 		#--------------------------------------------------------#
@@ -103,6 +114,11 @@ class Jugador(pg.sprite.Sprite):
 				self.rect.bottom=m.rect.top
 			if self.var_y <0:
 				self.rect.top=m.rect.bottom
+
+		if self.buff:
+			ls_pb = pg.sprite.spritecollide(self, self.rivales, True)
+			for m in ls_pb:
+				m.vidas -= 1
 		'''
 		#--------------------------------------------------------#
 		#Premios
@@ -113,11 +129,11 @@ class Jugador(pg.sprite.Sprite):
 		#--------------------------------------------------------#
 		'''
 
-		if self.var_x !=0 or self.var_y !=0:
-			if self.i < self.b + 2:
-				self.i+=1
-			else:
-				self.i=self.b
+		# if self.var_x !=0 or self.var_y !=0:
+		if self.i < self.b + 2:
+			self.i+=1
+		else:
+			self.i=self.b
 		self.image=self.m[self.i][self.dir]
 
 class Rival(pg.sprite.Sprite):

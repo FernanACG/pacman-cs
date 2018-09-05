@@ -70,6 +70,7 @@ class Jugador(pg.sprite.Sprite):
 		self.puntaje = 0
 		self.buff = False
 		self.vidas = 1
+		self.cont = 0
 
 	def GetPos(self):
 		return [self.rect.x, self.rect.y]
@@ -115,26 +116,26 @@ class Jugador(pg.sprite.Sprite):
 			if self.var_y <0:
 				self.rect.top=m.rect.bottom
 
-		if self.buff:
-			ls_pb = pg.sprite.spritecollide(self, self.rivales, True)
-			for m in ls_pb:
-				m.vidas -= 1
-		'''
+		# if self.buff:
+		# 	ls_pb = pg.sprite.spritecollide(self, self.rivales, True)
+		# 	for m in ls_pb:
+		# 		m.vidas -= 1
+
 		#--------------------------------------------------------#
 		#Premios
-		ls_bp = pg.sprite.spritecollide(self, self.premios, True)
-		for m in ls_bp:
-			self.puntaje += 500
+		# if not self.buff:
+		# 	ls_bp = pg.sprite.spritecollide(self, self.premios, True)
+		# 	for m in ls_bp:
+		# 		self.Buffado()
 
 		#--------------------------------------------------------#
-		'''
 
 		# if self.var_x !=0 or self.var_y !=0:
-		if self.i < self.b + 2:
-			self.i+=1
+		if self.i < (self.b + 2):
+			self.i += 1
 		else:
-			self.i=self.b
-		self.image=self.m[self.i][self.dir]
+			self.i = self.b
+		self.image = self.m[self.i][self.dir]
 
 class Rival(pg.sprite.Sprite):
 	def __init__(self, img_sprite, a,b):

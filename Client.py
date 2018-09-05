@@ -27,16 +27,11 @@ def main(idplayer):
 	players = {}
 
 
-	imagen=Recortar("pacmanR.png",3,4)
+	imagen=Recortar("pacmanS.png",6,4)
 
-	players[idplayer] = Jugador(imagen,0,0, 550, 400)
-
-	Personajes = pg.sprite.Group()
-	Personajes.add(players[idplayer])
 	#Pj.nriv = Clientes-1
 
 	Corn = pg.image.load('corn.png')
-	Corn = pg.transform.scale(Corn, (32,41))
 	Seed = pg.image.load('seed.png')
 
 	Archivo = "Mapa.map"
@@ -98,7 +93,7 @@ def main(idplayer):
 
 	Bf4 = BuffoR(Corn)
 	Bf4.rect.x = 33*32
-	Bf4.rect.y = 18*32
+	Bf4.rect.y = 17*32
 	Buffosr.add(Bf4)
 
 	Bf5 = BuffoR(Corn)
@@ -106,7 +101,13 @@ def main(idplayer):
 	Bf5.rect.y = 7*32
 	Buffosr.add(Bf5)
 
+	players[idplayer] = Jugador(imagen,0,0, 17*32, 9*32)
 	players[idplayer].muros = Muros
+	players[idplayer].premios = Buffosr
+
+	Personajes = pg.sprite.Group()
+	Personajes.add(players[idplayer])
+
 
 #---------------------------------------------#
 
@@ -136,6 +137,7 @@ def main(idplayer):
 
 			players[usernameInBytes] = Jugador(imagen,0,0, x, y)
 			players[usernameInBytes].muros = Muros
+			players[usernameInBytes].premios = Buffosr
 			Personajes.add(players[usernameInBytes])
 	Running=True
 
@@ -179,7 +181,7 @@ def main(idplayer):
 					x = players[idplayer].GetPos()[0]
 					y = players[idplayer].GetPos()[1]
 
-					players[idplayer].setPos(x, y-10) # ubica la posicion en la que este
+					players[idplayer].setPos(x, y-16) # ubica la posicion en la que este
 
 					players[idplayer].dir = 1
 					players[idplayer].var_y = -5
@@ -191,7 +193,7 @@ def main(idplayer):
 					x = players[idplayer].GetPos()[0]
 					y = players[idplayer].GetPos()[1]
 
-					players[idplayer].setPos(x, y+10)
+					players[idplayer].setPos(x, y+16)
 					players[idplayer].dir = 3
 					players[idplayer].var_y = 5
 					players[idplayer].var_x = 0
@@ -202,7 +204,7 @@ def main(idplayer):
 					x = players[idplayer].GetPos()[0]
 					y = players[idplayer].GetPos()[1]
 
-					players[idplayer].setPos(x-10, y)
+					players[idplayer].setPos(x-16, y)
 
 					players[idplayer].dir = 2
 					players[idplayer].var_y = 0
@@ -214,7 +216,7 @@ def main(idplayer):
 					x = players[idplayer].GetPos()[0]
 					y = players[idplayer].GetPos()[1]
 
-					players[idplayer].setPos(x+10, y)
+					players[idplayer].setPos(x+16, y)
 
 					players[idplayer].dir = 0
 					players[idplayer].var_y = 0
@@ -223,26 +225,32 @@ def main(idplayer):
 					Socket.send_multipart([b"changepos", bPOSPlayer])
 				if event.key == pg.K_k:
 					players[idplayer].GetPos()
-					#Cambiar de direccion
+
+						#Cambiar de direccion
 			# if event.type == pg.KEYUP:
 			# 	players[idplayer].var_y = 0
 			# 	players[idplayer].var_x = 0
 
 		#
+		for Buffo in Buffosr:
+			ls_bf = pg.sprite.spritecollide(Buffo, Personajes, False)
+			for m in ls_bf:
+				Buffosr.remove(Buffo)
+				m.Buffado()
 
 		for Pj in Personajes:
 			ls_se = pg.sprite.spritecollide(Pj, Semillas, True)
 			# for m in ls_se:
 			# 	CantSeeds -= 1
 
-			ls_bc = pg.sprite.spritecollide(Pj, Buffosr, True)
-			for m in ls_bc:
-				Pj.Buffado()
+			# ls_bc = pg.sprite.spritecollide(Pj, Buffosr, False)
+			# for m in ls_bc:
+			# 	Pj.Buffado()
 
-			if Pj.buff:
-				ls_rc = pg.sprite.spritecollide(Pj, Personajes, True)
-				for m in ls_rc:
-					Pj.BajarVida()
+			# if Pj.buff:
+			# 	ls_rc = pg.sprite.spritecollide(Pj, Personajes, True)
+			# 	for m in ls_rc:
+			# 		m.BajarVida()
 
 
 		Personajes.update()
